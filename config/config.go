@@ -1,6 +1,10 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"os"
+
+	"github.com/spf13/viper"
+)
 
 func InitConfig() {
 	viper.SetConfigName("config")
@@ -8,10 +12,6 @@ func InitConfig() {
 	viper.AddConfigPath("/etc/baltazar")
 	viper.AddConfigPath("$HOME/.baltazar")
 	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err)
-	}
 
 	viper.SetDefault("model.api_key", "OPENAI_COMPATIBLE_API_KEY")
 	viper.SetDefault("model.api_base_url", "https://api.mistral.ai/v1/")
@@ -19,4 +19,10 @@ func InitConfig() {
 	viper.SetDefault("model.temperature", 0.3)
 	viper.SetDefault("model.max_tokens", 2048)
 	viper.SetDefault("model.system_prompt", "You are a helpful assistant")
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		os.Create("config.yaml")
+		viper.WriteConfig()
+	}
 }

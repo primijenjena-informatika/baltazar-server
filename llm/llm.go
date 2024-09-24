@@ -5,10 +5,11 @@ import (
 
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
+	"github.com/openai/openai-go/packages/ssestream"
 	"github.com/spf13/viper"
 )
 
-func SendChatContext(messages []openai.ChatCompletionMessageParamUnion) {
+func SendChatContext(messages []openai.ChatCompletionMessageParamUnion) *ssestream.Stream[openai.ChatCompletionChunk] {
 	client := openai.NewClient(
 		option.WithAPIKey(viper.GetString("model.api_key")),
 		option.WithBaseURL(viper.GetString("model.api_base_url")),
@@ -25,4 +26,5 @@ func SendChatContext(messages []openai.ChatCompletionMessageParamUnion) {
 		Model: openai.F(openai.ChatModel(viper.GetString("model.id"))),
 	})
 
+	return stream
 }
