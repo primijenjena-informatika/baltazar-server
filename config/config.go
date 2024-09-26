@@ -19,6 +19,7 @@ func InitConfig() {
 	viper.SetDefault("model.temperature", 0.3)
 	viper.SetDefault("model.max_tokens", 2048)
 	viper.SetDefault("model.system_prompt", "You are a helpful assistant")
+	viper.SetDefault("api.port", 8080)
 
 	err := viper.ReadInConfig()
 	if err != nil {

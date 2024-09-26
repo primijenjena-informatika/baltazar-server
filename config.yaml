@@ -1,6 +1,10 @@
+api:
+  port: 8080
+  api_keys:
+    - "tH%$%snxhiR3P2RwUudo"
 model:
   api_base_url: https://api.mistral.ai/v1/
-  api_key: "v6IXnqpRU0dj6FhKiGJdSDG31m40xOkY"
+  api_key: "8LiYIWPVMiIuXprOuSgYfPv2AaYCJjG1"
   id: mistral-large-2407
   max_tokens: 2048
   system_prompt: >
