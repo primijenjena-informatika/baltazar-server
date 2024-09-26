@@ -1,10 +1,9 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"slices"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/openai/openai-go"
@@ -29,16 +28,16 @@ type SendMessageRequest struct {
 }
 
 func HandleMessages(c echo.Context) error {
-	apiKeys := viper.GetStringSlice("api.api_keys")
+	// apiKeys := viper.GetStringSlice("api.api_keys")
 
-	auth := c.Request().Header.Get("Authorization")
-	apiKey := strings.TrimPrefix(auth, "Bearer ")
+	// auth := c.Request().Header.Get("Authorization")
+	// apiKey := strings.TrimPrefix(auth, "Bearer ")
 
-	if !slices.Contains(apiKeys, apiKey) {
-		return c.JSON(http.StatusUnauthorized, echo.Map{
-			"message": "Invalid API key",
-		})
-	}
+	// if !slices.Contains(apiKeys, apiKey) {
+	// 	return c.JSON(http.StatusUnauthorized, echo.Map{
+	// 		"message": "Invalid API key",
+	// 	})
+	// }
 
 	req := new(SendMessageRequest)
 
@@ -76,7 +75,21 @@ func HandleMessages(c echo.Context) error {
 
 	c.Response().Writer.WriteHeader(http.StatusOK)
 	for token := range tokenChan {
-		_, err := fmt.Fprintf(c.Response().Writer, "data: %s\n\n", token)
+		data := map[string]interface{}{
+			"choices": []map[string]interface{}{
+				{
+					"delta": map[string]string{
+						"content": token,
+					},
+				},
+			},
+		}
+		jsonData, err := json.Marshal(data)
+		if err != nil {
+			c.Logger().Error(err)
+			break
+		}
+		_, err = fmt.Fprintf(c.Response().Writer, "data: %s\n\n", jsonData)
 		if err != nil {
 			c.Logger().Error(err)
 			break
